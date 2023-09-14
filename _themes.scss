@@ -244,7 +244,7 @@ $themeValues: ();
 ///
 /// @require {mixin} theme
 ///
-@mixin theme-bg-tx ($themeColor, $inlineExtraBg:null, $postExtraBr:null, $inlineExtraCol:null, $postExtraCol:null) {
+@mixin theme-bg-tx ($themeColor, $inlineExtraBg:null, $postExtraBg:null, $inlineExtraCol:null, $postExtraCol:null) {
   @include theme('background-color', '#{$themeColor}', $inlineExtraBg, $postExtraBg);
   @include theme('color', 'text-on-#{$themeColor}', $inlineExtraCol, $postExtraCol);
 }
