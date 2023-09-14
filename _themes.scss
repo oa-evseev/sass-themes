@@ -237,10 +237,14 @@ $themeValues: ();
 /// @author Oleg Evseev
 ///
 /// @arg {String} $themeColor - color name used in themes for background
+/// @arg {String} $inlineExtraBg [null]  - CSS code to put before the theme value for `background-color`
+/// @arg {String} $postExtraBg [null]    - CSS code to put after the theme value for `background-color`
+/// @arg {String} $inlineExtraCol [null] - CSS code to put before the theme value for `color` (text)
+/// @arg {String} $postExtraCol [null]   - CSS code to put after the theme value for `color` (text)
 ///
 /// @require {mixin} theme
 ///
-@mixin theme-bg-tx ($themeColor) {
-  @include theme('background-color', '#{$themeColor}');
-  @include theme('color', 'text-on-#{$themeColor}');
+@mixin theme-bg-tx ($themeColor, $inlineExtraBg null, $postExtraBr:null, $inlineExtraCol null, $postExtraCol:null) {
+  @include theme('background-color', '#{$themeColor}', $inlineExtraBg, $postExtraBg);
+  @include theme('color', 'text-on-#{$themeColor}', $inlineExtraCol, $postExtraCol);
 }
