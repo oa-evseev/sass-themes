@@ -92,14 +92,15 @@ $themeValues: ();
 
 /// Assigns a property a theme value for each defined theme.
 ///
-/// @author Stuart Roskelley
+/// @author Stuart Roskelley, Oleg Evseev (sameClass part)
 ///
 /// @link https://medium.com/@sroskelley/theming-in-sass-67b8c0265e3f
 ///
-/// @arg {String} $property            - CSS property to be controlled by the theme
-/// @arg {String} $key                 - theme map key where the value is located
-/// @arg {String} $inlineExtra [null]  - CSS code to put before the theme value
-/// @arg {String} $postExtra [null]    - CSS code to put after the theme value
+/// @arg {String}  $property            - CSS property to be controlled by the theme
+/// @arg {String}  $key                 - theme map key where the value is located
+/// @arg {String}  $inlineExtra [null]  - CSS code to put before the theme value
+/// @arg {String}  $postExtra [null]    - CSS code to put after the theme value
+/// @arg {Boolean} $sameClass [false]   - whether the outer class is the class of the same element as the theme class (usually body)
 ///
 /// @require {List} $themes
 /// @require {Map} $themeValues
@@ -151,21 +152,35 @@ $themeValues: ();
 ///      background-color: var(--theme-dark-backgroundLight, #141519);
 ///    }
 ///
-@mixin theme($property, $key, $inlineExtra:null, $postExtra:null) {
+@mixin theme($property, $key, $inlineExtra:null, $postExtra:null, $sameClass: false) {
   @each $theme in $themes {
     @if (themeExists($key, $theme)) {
       $value: getThemeValue($key, $theme);
       // the syntax differes a bit if you are using css-modules
       @if $useCssModules {
-        :global(.#{$theme}) & {
-          #{$property}: #{$inlineExtra} #{$value} #{$postExtra}; //fallback for browsers that shouldn't exist anymore
-          #{$property}: #{$inlineExtra} var(--theme-#{$theme}-#{$key}, #{$value}) #{$postExtra};
-        }
+	@if $sameClass {
+          :global(.#{$theme}) .#{$theme}#{&} {// TODO: this might not work
+            #{$property}: #{$inlineExtra} #{$value} #{$postExtra}; //fallback for browsers that shouldn't exist anymore
+            #{$property}: #{$inlineExtra} var(--theme-#{$theme}-#{$key}, #{$value}) #{$postExtra};
+          }
+	} @else {
+          :global(.#{$theme}) & {
+            #{$property}: #{$inlineExtra} #{$value} #{$postExtra}; //fallback for browsers that shouldn't exist anymore
+            #{$property}: #{$inlineExtra} var(--theme-#{$theme}-#{$key}, #{$value}) #{$postExtra};
+          }
+	}
       } @else {
-        @at-root .#{$theme} #{&} {
-          #{$property}: #{$inlineExtra} #{$value} #{$postExtra}; //fallback for browsers that shouldn't exist anymore
-          #{$property}: #{$inlineExtra} var(--theme-#{$theme}-#{$key}, #{$value}) #{$postExtra};
-        }
+	@if $sameClass {
+          @at-root .#{$theme}#{&} {
+            #{$property}: #{$inlineExtra} #{$value} #{$postExtra}; //fallback for browsers that shouldn't exist anymore
+            #{$property}: #{$inlineExtra} var(--theme-#{$theme}-#{$key}, #{$value}) #{$postExtra};
+          }
+	} @else {
+          @at-root .#{$theme} #{&} {
+            #{$property}: #{$inlineExtra} #{$value} #{$postExtra}; //fallback for browsers that shouldn't exist anymore
+            #{$property}: #{$inlineExtra} var(--theme-#{$theme}-#{$key}, #{$value}) #{$postExtra};
+          }
+	}
       }
     } @else {
       @error "Property #{$key} doesn't exist in #{$theme}";
@@ -236,15 +251,16 @@ $themeValues: ();
 ///
 /// @author Oleg Evseev
 ///
-/// @arg {String} $themeColor - color name used in themes for background
-/// @arg {String} $inlineExtraBg [null]  - CSS code to put before the theme value for `background-color`
-/// @arg {String} $postExtraBg [null]    - CSS code to put after the theme value for `background-color`
-/// @arg {String} $inlineExtraCol [null] - CSS code to put before the theme value for `color` (text)
-/// @arg {String} $postExtraCol [null]   - CSS code to put after the theme value for `color` (text)
+/// @arg {String}  $themeColor - color name used in themes for background
+/// @arg {String}  $inlineExtraBg [null]  - CSS code to put before the theme value for `background-color`
+/// @arg {String}  $postExtraBg [null]    - CSS code to put after the theme value for `background-color`
+/// @arg {String}  $inlineExtraCol [null] - CSS code to put before the theme value for `color` (text)
+/// @arg {String}  $postExtraCol [null]   - CSS code to put after the theme value for `color` (text)
+/// @arg {Boolean} $sameClass [false]     - whether the outer class is the class of the same element as the theme class (usually body)
 ///
 /// @require {mixin} theme
 ///
-@mixin theme-bg-tx ($themeColor, $inlineExtraBg:null, $postExtraBg:null, $inlineExtraCol:null, $postExtraCol:null) {
-  @include theme('background-color', '#{$themeColor}', $inlineExtraBg, $postExtraBg);
-  @include theme('color', 'text-on-#{$themeColor}', $inlineExtraCol, $postExtraCol);
+@mixin theme-bg-tx ($themeColor, $inlineExtraBg:null, $postExtraBg:null, $inlineExtraCol:null, $postExtraCol:null, $sameClass: false) {
+  @include theme('background-color', '#{$themeColor}', $inlineExtraBg, $postExtraBg, $sameClass);
+  @include theme('color', 'text-on-#{$themeColor}', $inlineExtraCol, $postExtraCol, $sameClass);
 }
