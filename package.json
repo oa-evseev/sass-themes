@@ -1,7 +1,7 @@
 {
   "name": "sass-themes",
   "description": "themes is a Sass workaround that helps manipulating themes",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "keywords": [
     "sass",
     "themes"
@@ -13,14 +13,16 @@
   ],
   "files": [
     "_themes.scss",
+    "CHANGELOG.md",
     "LICENSE",
     "README.md"
   ],
   "main": "_themes.scss",
   "scripts": {
-    "test": "jest",
-    "sassdoc": "./scripts/sassdoc.sh",
-    "build:examples": "sass ./examples:./examples --no-source-map"
+    "test": "node test/run.mjs",
+    "sassdoc": "sassdoc _themes.scss",
+    "build:examples": "sass test/fixtures:build/examples --no-source-map",
+    "test:deprecations": "sass --fatal-deprecation=global-builtin --no-source-map test/fixtures:build/test"
   },
   "contributors": [
     {
@@ -39,7 +41,7 @@
   "license": "MIT",
   "homepage": "https://github.com/oa-evseev/sass-themes/",
   "devDependencies": {
-    "sass": "^1.64.2",
+    "sass": "1.102.0",
     "sassdoc": "^2.7.4"
   }
 }

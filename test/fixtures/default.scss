@@ -1,0 +1,26 @@
+@use '../../themes';
+
+@include themes.generateThemeMappings('light', (
+  surface: #fff,
+  text-on-surface: #111,
+  border: #ccc,
+));
+@include themes.generateThemeMappings('dark', (
+  surface: #111,
+  text-on-surface: #fff,
+  border: #444,
+));
+
+:root {
+  @include themes.generateThemeVariables;
+}
+
+.card {
+  @include themes.theme(background-color, surface);
+  @include themes.theme(border, border, 1px solid, !important);
+  @include themes.theme-bg-tx(surface);
+}
+
+.page {
+  @include themes.theme(color, text-on-surface, $sameClass: true);
+}

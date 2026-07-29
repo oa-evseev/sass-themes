@@ -1,3 +1,4 @@
+@use 'sass:list';
 @use 'sass:map';
 
 ////
@@ -46,8 +47,6 @@ $themeValues: ();
 ///
 /// @link https://medium.com/@sroskelley/theming-in-sass-67b8c0265e3f
 ///
-/// @require {List} $themeValues
-///
 /// @arg {String} $key - colour key
 /// @arg {String} $theme - theme name
 ///
@@ -71,8 +70,6 @@ $themeValues: ();
 /// @author Stuart Roskelley
 ///
 /// @link https://medium.com/@sroskelley/theming-in-sass-67b8c0265e3f
-///
-/// @require {List} $themeValues
 ///
 /// @arg {String} $key - colour key
 /// @arg {String} $theme - theme name
@@ -156,31 +153,31 @@ $themeValues: ();
   @each $theme in $themes {
     @if (themeExists($key, $theme)) {
       $value: getThemeValue($key, $theme);
-      // the syntax differes a bit if you are using css-modules
+      // The syntax differs slightly when using CSS Modules.
       @if $useCssModules {
-	@if $sameClass {
-          :global(.#{$theme}) .#{$theme}#{&} {// TODO: this might not work
+        @if $sameClass {
+          @at-root :global(.#{$theme})#{&} {
             #{$property}: #{$inlineExtra} #{$value} #{$postExtra}; //fallback for browsers that shouldn't exist anymore
             #{$property}: #{$inlineExtra} var(--theme-#{$theme}-#{$key}, #{$value}) #{$postExtra};
           }
-	} @else {
+        } @else {
           :global(.#{$theme}) & {
             #{$property}: #{$inlineExtra} #{$value} #{$postExtra}; //fallback for browsers that shouldn't exist anymore
             #{$property}: #{$inlineExtra} var(--theme-#{$theme}-#{$key}, #{$value}) #{$postExtra};
           }
-	}
+        }
       } @else {
-	@if $sameClass {
+        @if $sameClass {
           @at-root .#{$theme}#{&} {
             #{$property}: #{$inlineExtra} #{$value} #{$postExtra}; //fallback for browsers that shouldn't exist anymore
             #{$property}: #{$inlineExtra} var(--theme-#{$theme}-#{$key}, #{$value}) #{$postExtra};
           }
-	} @else {
+        } @else {
           @at-root .#{$theme} #{&} {
             #{$property}: #{$inlineExtra} #{$value} #{$postExtra}; //fallback for browsers that shouldn't exist anymore
             #{$property}: #{$inlineExtra} var(--theme-#{$theme}-#{$key}, #{$value}) #{$postExtra};
           }
-	}
+        }
       }
     } @else {
       @error "Property #{$key} doesn't exist in #{$theme}";
@@ -197,14 +194,14 @@ $themeValues: ();
 /// @link https://medium.com/@sroskelley/theming-in-sass-67b8c0265e3f
 ///
 /// @arg {String} $themeName - name of the new theme added
-/// @arg {String} $newThemeMap - theme name
+/// @arg {Map} $newThemeMap - map of theme keys and values
 ///
 /// @require {List} $themes
 /// @require {Map} $themeValues
 ///
 @mixin generateThemeMappings($themeName, $newThemeMap) {
   //creates/adds to list of theme names
-  $themes: append($themes, $themeName, $separator: comma) !global;
+  $themes: list.append($themes, $themeName, $separator: comma) !global;
   @each $key, $value in $newThemeMap {
     //adds new themeKey if doesn't exist
     @if not map.has-key($themeValues, $key) {
@@ -214,7 +211,7 @@ $themeValues: ();
     @else {
       $existingKeyMap: map.get($themeValues, $key);
       //if theme variable doesn't exist, add it
-      @if not map.get($existingKeyMap, $themeName) {
+      @if not map.has-key($existingKeyMap, $themeName) {
         $newKeyMap: map.merge($existingKeyMap, ( $themeName: $value ));
         $themeValues: map.merge($themeValues, ( $key: $newKeyMap )) !global;
       }
@@ -243,9 +240,9 @@ $themeValues: ();
   }
 }
 
-/// Mixin allowing to set two colours similtaniously:
+/// Mixin allowing two colours to be set simultaneously:
 /// `color` and `background-color`.
-/// Attention: the mixint presumes that there is a strict color-naming
+/// Attention: the mixin presumes that there is a strict color-naming
 /// notation about texts on backgrounds: if the background is `foo-color`
 /// the text colour on it should be named `text-on-foo-color`.
 ///

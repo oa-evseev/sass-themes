@@ -1,0 +1,15 @@
+@use '../../themes' with (
+  $useCssModules: true
+);
+
+@include themes.generateThemeMappings('light', (
+  surface: #fff,
+));
+@include themes.generateThemeMappings('dark', (
+  surface: #111,
+));
+
+.card {
+  @include themes.theme(background-color, surface);
+  @include themes.theme(color, surface, $sameClass: true);
+}
