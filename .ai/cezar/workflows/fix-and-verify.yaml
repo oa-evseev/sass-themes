@@ -1,0 +1,3 @@
+name: fix-and-verify
+base: dev
+verify: make project-test

@@ -1,0 +1,12 @@
+.PHONY: rgn-update rgn-review rgn-release
+rgn-update:
+	@test "$$(git branch --show-current)" = dev
+	@test -z "$$(git status --porcelain)"
+	@git fetch origin && git merge --ff-only origin/dev
+rgn-review: rgn-update
+	@$(MAKE) project-test
+rgn-release: rgn-review
+	@command -v gh >/dev/null
+	@url=$$(gh pr list --state open --base main --head dev --json url --jq '.[0].url // empty'); \
+	test -n "$$url" || url=$$(gh pr create --base main --head dev --title 'Release dev to main' --body 'Human release boundary.'); \
+	gh pr merge "$$url" --auto --merge
