@@ -1,0 +1,58 @@
+name: fix-and-verify
+description: Implement locally, verify through the project contract, then publish to dev.
+steps:
+  - id: implement
+    name: Implement
+    runner: codex
+    prompt: "{{task}}"
+    skill: project-conventions
+
+  - id: sync
+    name: Sync with dev
+    command: |
+      set -eu
+      BRANCH="$(git branch --show-current)"
+      case "$BRANCH" in
+        cez/*) ;;
+        *) echo "Refusing to sync unexpected branch: $BRANCH" >&2; exit 1 ;;
+      esac
+      git add -A
+      if ! git diff --cached --quiet; then git commit -m "Cezar: ${BRANCH#cez/}"; fi
+      git fetch origin
+      if ! git merge-base --is-ancestor origin/dev HEAD; then git rebase origin/dev; fi
+
+  - id: verify
+    name: Verify
+    command: make test
+    onFail:
+      retry: implement
+      max: 2
+
+  - id: publish
+    name: Publish
+    command: |
+      set -eu
+      BRANCH="$(git branch --show-current)"
+      case "$BRANCH" in
+        cez/*) ;;
+        *) echo "Refusing to publish unexpected branch: $BRANCH" >&2; exit 1 ;;
+      esac
+      git fetch origin
+      if ! git merge-base --is-ancestor origin/dev HEAD; then
+        echo "Task branch is no longer based on current origin/dev; refusing to publish unverified rebased code." >&2
+        exit 1
+      fi
+      git add -A
+      if ! git diff --cached --quiet; then git commit -m "Cezar: ${BRANCH#cez/}"; fi
+      if git diff --quiet origin/dev...HEAD; then
+        echo "done/no changes"
+      else
+        git push -u origin "$BRANCH"
+        PR_NUMBER="$(gh pr list --head "$BRANCH" --base dev --state open --json number --jq '.[0].number // empty')"
+        if [ -z "$PR_NUMBER" ]; then
+          PR_URL="$(gh pr create --base dev --head "$BRANCH" --fill)"
+          PR_NUMBER="${PR_URL##*/}"
+        fi
+        gh pr merge "$PR_NUMBER" --auto --squash
+        echo "PR #$PR_NUMBER published with squash auto-merge enabled."
+      fi
