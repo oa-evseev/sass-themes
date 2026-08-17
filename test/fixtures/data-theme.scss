@@ -1,0 +1,12 @@
+@use '../../themes' with (
+  $selector-mode: data-theme,
+  $css-modules: true,
+);
+
+@include themes.register(light, (surface: canvas));
+@include themes.register(dark_mode, (surface: canvastext));
+
+.card {
+  @include themes.apply(background, surface);
+  @include themes.apply(color, surface, $same-element: true);
+}

@@ -1,7 +1,7 @@
 {
   "name": "sass-themes",
-  "description": "themes is a Sass workaround that helps manipulating themes",
-  "version": "0.1.1",
+  "description": "Generic build-time Sass theme compiler with runtime CSS variable overrides",
+  "version": "1.0.0",
   "keywords": [
     "sass",
     "themes"

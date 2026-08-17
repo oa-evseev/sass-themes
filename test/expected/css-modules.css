@@ -1,11 +1,13 @@
 :global(.light) .card {
-  background-color: #fff;
-  background-color: var(--theme-light-surface, #fff);
+  background: #fff;
+  background: var(--theme-light-surface, #fff);
 }
+
 :global(.dark) .card {
-  background-color: #111;
-  background-color: var(--theme-dark-surface, #111);
+  background: #111;
+  background: var(--theme-dark-surface, #111);
 }
+
 :global(.light).card {
   color: #fff;
   color: var(--theme-light-surface, #fff);
