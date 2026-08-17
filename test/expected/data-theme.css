@@ -1,0 +1,19 @@
+[data-theme=light] .card {
+  background: canvas;
+  background: var(--theme-light-surface, canvas);
+}
+
+[data-theme=dark_mode] .card {
+  background: canvastext;
+  background: var(--theme-dark_mode-surface, canvastext);
+}
+
+[data-theme=light].card {
+  color: canvas;
+  color: var(--theme-light-surface, canvas);
+}
+
+[data-theme=dark_mode].card {
+  color: canvastext;
+  color: var(--theme-dark_mode-surface, canvastext);
+}

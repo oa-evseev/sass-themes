@@ -1,0 +1,5 @@
+@use '../../themes';
+
+.contract {
+  property-name: themes.variable-name(preview_theme, surface-1);
+}

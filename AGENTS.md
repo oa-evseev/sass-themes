@@ -20,5 +20,6 @@ The rules below supplement or tighten the workspace policy for this repository.
 - Regression suite: `npm test`.
 - Deprecation compatibility: `npm run test:deprecations`.
 - `npm run sassdoc` and `npm run build:examples` generate documentation/example output and should run only when relevant.
-- There is no Makefile or repository CI workflow.
+- Clean-worktree verification: `make test` (runs `npm ci`, regression, and deprecation checks).
+- The GitHub `test` workflow uses the same `make test` contract.
 - Changes are complete when regression and deprecation checks pass and public mixin/function behavior remains backward compatible or the requested breaking change is documented.

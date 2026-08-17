@@ -1,0 +1,19 @@
+:root {
+  --theme-light-surface: #fff;
+  --theme-dark-surface: #111;
+}
+
+.light .card {
+  background: #fff;
+  background: var(--theme-light-surface, #fff);
+}
+
+.dark .card {
+  background: #111;
+  background: var(--theme-dark-surface, #111);
+}
+
+:root.preview {
+  --theme-light-surface: #fff;
+  --theme-dark-surface: #111;
+}
