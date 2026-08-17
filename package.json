@@ -7,7 +7,6 @@
     "themes"
   ],
   "ignore": [
-    "sassdoc",
     "example",
     "**/.*"
   ],
@@ -20,7 +19,6 @@
   "main": "_themes.scss",
   "scripts": {
     "test": "node test/run.mjs",
-    "sassdoc": "sassdoc _themes.scss",
     "build:examples": "sass test/fixtures:build/examples --no-source-map",
     "test:deprecations": "sass --fatal-deprecation=global-builtin --no-source-map test/fixtures:build/test"
   },
@@ -41,7 +39,6 @@
   "license": "MIT",
   "homepage": "https://github.com/oa-evseev/sass-themes/",
   "devDependencies": {
-    "sass": "1.102.0",
-    "sassdoc": "^2.7.4"
+    "sass": "1.102.0"
   }
 }
