@@ -112,3 +112,8 @@ make test
 
 The equivalent explicit commands are `npm ci`, `npm test`, and
 `npm run test:deprecations`. Dart Sass global built-in deprecations are fatal.
+
+API documentation is maintained by hand in `docs/index.html`. Any change to a
+public variable, function, mixin, or its contract must update the adjacent
+`///` annotations, this README when relevant, and `docs/index.html` in the same
+change.

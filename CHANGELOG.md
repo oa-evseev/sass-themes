@@ -16,6 +16,8 @@
   compatibility aliases.
 - Make `make test` install locked dependencies and run regression and
   deprecation checks from a clean worktree.
+- Replace the generated SassDoc site and its vulnerable dependency tree with a
+  dependency-free, manually maintained static HTML reference.
 
 ## 0.1.1 - 2026-07-28
 
