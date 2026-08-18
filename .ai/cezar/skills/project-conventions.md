@@ -32,3 +32,11 @@
 - RGN supplies the configured base worker toolchain and runtime. The repository declares its runtime constraints and owns reproducible project dependency installation and setup behind `make test`.
 - When `Verify` fails and returns structured diagnostics to `Implement`, respond to those diagnostics without independently reconstructing the `Verify` environment.
 - Do not weaken or remove tests merely to make verification or CI pass.
+
+## Managed make contract
+
+- Protocol v4 owns root `Makefile.rgn`; projects keep ownership of their selected conventional makefile and of the self-contained `test` target.
+- GNU make selects `GNUmakefile`, `makefile`, then `Makefile`. RGN adds only a bounded marker block to that selected file, including `Makefile.rgn` and supplying missing `review` and `release` aliases.
+- Existing project-owned `review` and `release` recipes are preserved. Ambiguous or malformed managed wiring is a conflict requiring manual reconciliation.
+- `make review` fast-forwards a clean `dev` checkout and invokes exactly the project-owned `make test` contract.
+- `make release` is human-only. It requires clean exact `dev`, runs `make test`, and creates or reuses the `dev` to `main` pull request with merge auto-merge gated by required `test`; it never pushes protected branches directly.
