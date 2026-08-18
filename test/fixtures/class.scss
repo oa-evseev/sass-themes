@@ -1,0 +1,34 @@
+@use '../../themes';
+
+@include themes.register(light, (
+  surface: #fff,
+  text-on-surface: #111,
+  enabled: false,
+  depth: 0 2px 6px rgb(0 0 0 / 20%),
+  family: ('Avenir Next', sans-serif),
+  border: 1px solid currentColor,
+));
+@include themes.register(dark, (
+  surface: #111,
+  text-on-surface: #fff,
+  enabled: true,
+  depth: 0 3px 9px rgb(0 0 0 / 50%),
+  family: ('Source Sans 3', sans-serif),
+  border: 2px dashed currentColor,
+));
+
+:root {
+  @include themes.emit-variables();
+}
+
+.card {
+  @include themes.apply(box-shadow, depth);
+  @include themes.apply(border, surface, 1px solid, !important);
+  @include themes.apply(font-family, family);
+  @include themes.apply(--feature-enabled, enabled);
+  @include themes.theme-bg-tx(surface);
+}
+
+.page {
+  @include themes.apply(color, text-on-surface, $same-element: true);
+}

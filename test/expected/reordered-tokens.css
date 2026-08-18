@@ -1,0 +1,8 @@
+:root {
+  --theme-first-zero: 0;
+  --theme-first-flag: false;
+  --theme-first-quoted: "hello world";
+  --theme-second-zero: 2;
+  --theme-second-flag: true;
+  --theme-second-quoted: "good bye";
+}

@@ -1,0 +1,28 @@
+# RGN managed protocol v4. Project dependency setup belongs only in `make test`.
+.PHONY: rgn-sync-dev rgn-review rgn-release
+
+rgn-sync-dev:
+	@branch=$$(git branch --show-current); \
+	if [ "$$branch" != dev ]; then echo "Error: this command requires dev (current: $${branch:-detached HEAD})." >&2; exit 1; fi; \
+	if [ -n "$$(git status --porcelain)" ]; then echo 'Error: the working tree must be clean.' >&2; exit 1; fi; \
+	git fetch origin && git merge --ff-only origin/dev
+
+rgn-review: rgn-sync-dev
+	@$(MAKE) --no-print-directory test
+
+# HUMAN ONLY. Automation and Cezar must never invoke this target.
+rgn-release:
+	@branch=$$(git branch --show-current); \
+	if [ "$$branch" != dev ]; then echo "Error: make release requires dev (current: $${branch:-detached HEAD})." >&2; exit 1; fi; \
+	if [ -n "$$(git status --porcelain)" ]; then echo 'Error: the working tree must be clean.' >&2; exit 1; fi; \
+	command -v gh >/dev/null 2>&1 || { echo 'Error: GitHub CLI (gh) is required.' >&2; exit 1; }; \
+	git fetch origin || exit 1; \
+	test "$$(git rev-parse HEAD)" = "$$(git rev-parse refs/heads/dev)" || { echo 'Error: HEAD must be the local dev branch.' >&2; exit 1; }; \
+	test "$$(git rev-parse refs/heads/dev)" = "$$(git rev-parse refs/remotes/origin/dev)" || { echo 'Error: local dev must exactly match origin/dev. Run make review.' >&2; exit 1; }; \
+	if git merge-base --is-ancestor origin/dev origin/main; then echo 'Release already complete: main contains dev.'; exit 0; fi; \
+	$(MAKE) --no-print-directory test || exit 1; \
+	url=$$(gh pr list --state open --base main --head dev --json url --jq '.[0].url // empty') || exit 1; \
+	if [ -z "$$url" ]; then url=$$(gh pr create --base main --head dev --title 'Release dev to main' --body 'Human-reviewed release from dev. Merge only after required checks pass.') || exit 1; fi; \
+	auto=$$(gh pr view "$$url" --json autoMergeRequest --jq '.autoMergeRequest != null') || exit 1; \
+	if [ "$$auto" = true ]; then echo "Release PR already awaits required checks: $$url"; \
+	else gh pr merge "$$url" --auto --merge || exit 1; echo "Release PR awaits required checks: $$url"; fi

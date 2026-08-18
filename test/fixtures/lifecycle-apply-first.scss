@@ -1,9 +1,16 @@
-@use '../../themes' with ($css-modules: true);
+@use '../../themes';
 
 @include themes.register(light, (surface: #fff));
 @include themes.register(dark, (surface: #111));
 
 .card {
   @include themes.apply(background, surface);
-  @include themes.apply(color, surface, $same-element: true);
+}
+
+:root {
+  @include themes.emit-variables();
+}
+
+.card-again {
+  @include themes.apply(background, surface);
 }

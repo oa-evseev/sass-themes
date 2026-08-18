@@ -1,0 +1,84 @@
+:root {
+  --theme-light-surface: #fff;
+  --theme-light-text-on-surface: #111;
+  --theme-light-enabled: false;
+  --theme-light-depth: 0 2px 6px rgba(0, 0, 0, 0.2);
+  --theme-light-family: "Avenir Next", sans-serif;
+  --theme-light-border: 1px solid currentColor;
+  --theme-dark-surface: #111;
+  --theme-dark-text-on-surface: #fff;
+  --theme-dark-enabled: true;
+  --theme-dark-depth: 0 3px 9px rgba(0, 0, 0, 0.5);
+  --theme-dark-family: "Source Sans 3", sans-serif;
+  --theme-dark-border: 2px dashed currentColor;
+}
+
+.light .card {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--theme-light-depth, 0 2px 6px rgba(0, 0, 0, 0.2));
+}
+
+.dark .card {
+  box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
+  box-shadow: var(--theme-dark-depth, 0 3px 9px rgba(0, 0, 0, 0.5));
+}
+
+.light .card {
+  border: 1px solid #fff !important;
+  border: 1px solid var(--theme-light-surface, #fff) !important;
+}
+
+.dark .card {
+  border: 1px solid #111 !important;
+  border: 1px solid var(--theme-dark-surface, #111) !important;
+}
+
+.light .card {
+  font-family: "Avenir Next", sans-serif;
+  font-family: var(--theme-light-family, "Avenir Next", sans-serif);
+}
+
+.dark .card {
+  font-family: "Source Sans 3", sans-serif;
+  font-family: var(--theme-dark-family, "Source Sans 3", sans-serif);
+}
+
+.light .card {
+  --feature-enabled: false;
+  --feature-enabled: var(--theme-light-enabled, false);
+}
+
+.dark .card {
+  --feature-enabled: true;
+  --feature-enabled: var(--theme-dark-enabled, true);
+}
+
+.light .card {
+  background-color: #fff;
+  background-color: var(--theme-light-surface, #fff);
+}
+
+.dark .card {
+  background-color: #111;
+  background-color: var(--theme-dark-surface, #111);
+}
+
+.light .card {
+  color: #111;
+  color: var(--theme-light-text-on-surface, #111);
+}
+
+.dark .card {
+  color: #fff;
+  color: var(--theme-dark-text-on-surface, #fff);
+}
+
+.light.page {
+  color: #111;
+  color: var(--theme-light-text-on-surface, #111);
+}
+
+.dark.page {
+  color: #fff;
+  color: var(--theme-dark-text-on-surface, #fff);
+}

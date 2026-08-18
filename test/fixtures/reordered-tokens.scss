@@ -1,0 +1,8 @@
+@use '../../themes';
+
+@include themes.register(first, (zero: 0, flag: false, quoted: 'hello world'));
+@include themes.register(second, (quoted: 'good bye', flag: true, zero: 2));
+
+:root {
+  @include themes.emit-variables();
+}
