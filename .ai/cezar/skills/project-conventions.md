@@ -11,7 +11,7 @@
 - Push task branches to `origin`.
 - Open pull requests only from `cez/*` into `dev`.
 - During implementation and verification, do not push, create pull requests, or merge anything.
-- GitHub publication is performed only by the dedicated `Publish` workflow step after local verification has passed.
+- GitHub publication is performed only by the dedicated `Publish` workflow step after local verification has passed; `Merge to dev` then proves required checks and the exact PR merge.
 - Use squash merge.
 - Enable auto-merge only after the pull request has been opened.
 - Required GitHub status check: `test`.
@@ -33,10 +33,18 @@
 - When `Verify` fails and returns structured diagnostics to `Implement`, respond to those diagnostics without independently reconstructing the `Verify` environment.
 - Do not weaken or remove tests merely to make verification or CI pass.
 
+## Managed protocol
+
+- Protocol v6 adds the explicit `Merge to dev` lifecycle step after `Publish`; Publish alone is not task completion.
+- `Merge to dev` uses GitHub-native required-check classification, bounded polling, exact head/base identity, and retries the same workflow from `Implement` on failure.
+- Terminal failure after publication preserves the PR, remote branch, and task worktree for investigation.
+
 ## Managed make contract
 
-- Protocol v4 owns root `Makefile.rgn`; projects keep ownership of their selected conventional makefile and of the self-contained `test` target.
+- Protocol v5 owns root `Makefile.rgn`; projects keep ownership of their selected conventional makefile and of the self-contained `test` target.
 - GNU make selects `GNUmakefile`, `makefile`, then `Makefile`. RGN adds only a bounded marker block to that selected file, including `Makefile.rgn` and supplying missing `review` and `release` aliases.
 - Existing project-owned `review` and `release` recipes are preserved. Ambiguous or malformed managed wiring is a conflict requiring manual reconciliation.
-- `make review` fast-forwards a clean `dev` checkout and invokes exactly the project-owned `make test` contract.
+- After fast-forwarding a clean, pre-existing `dev` checkout, protocol v5 synchronizes every declared submodule to the exact gitlink recorded by the new superproject `HEAD`; matching checkouts are left untouched.
+- `make review` establishes that managed synchronization invariant and then invokes exactly the project-owned `make test` contract.
+- This managed synchronization complements rather than replaces the repository contract: project-owned `make test` must still initialize and check required submodules in a fresh Verify checkout.
 - `make release` is human-only. It requires clean exact `dev`, runs `make test`, and creates or reuses the `dev` to `main` pull request with merge auto-merge gated by required `test`; it never pushes protected branches directly.
